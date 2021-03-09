@@ -21,8 +21,8 @@ import requests
 import configparser
 import os.path
 
+# Configuration variables
 config_file = 'config.ini'
-
 address = ''
 username = ''
 password = ''
@@ -30,6 +30,7 @@ hostname = ''
 port = 0
 db = ''
 
+# Read configuration file and set variables
 def get_global_config():
     if not os.path.isfile(config_file):
         print(f"Error: needs configuration file '{config_file}'")
@@ -39,8 +40,8 @@ def get_global_config():
     config.read(config_file)
     address = config['Mining']['Address']
 
-    username = config['Database']['Username']
-    password = config['Database']['Password']
+    username = config['TrackUser']['Username']
+    password = config['TrackUser']['Password']
     hostname = config['Database']['Hostname']
     port = int(config['Database']['Port'])
     db = config['Database']['DB']

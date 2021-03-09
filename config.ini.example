@@ -1,9 +1,15 @@
 [Mining]
-Address = [YOUR MINER ADDRESS]
+Address = "Your ETH Address"
 
 [Database]
-Username = [Name of MariaDB Worker]
-Password = [Password of MariaDB Worker]
-Hostname = [Name/IP of MariaDB server]
-Port = [Port to connect to MariaDB server]
-DB = [Name of MariaDB database which `Username` has access to]
+Hostname = "Your SQL server hostname"
+Port = "Your SQL server's port"
+DB = "Your database for storing data"
+
+[TrackUser]
+Username = "Your SQL user with SELECT, UPDATE, and INSERT access as necessary"
+Password = "That user's password"
+
+[ViewUser]
+Username = "Your SQL user with SELECT access as necessary"
+Password = "That user's password"
