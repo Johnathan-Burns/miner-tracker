@@ -73,8 +73,8 @@ def get_worker_stats(conn, name):
                 s = x['validShares']
                 shares = shares + s
                 cur.execute(f"INSERT INTO history(WorkerID, Timestamp, Shares) VALUES({name[1]}, {time}, {s});",)
+                conn.commit()
 
-    conn.commit()
     cur.close()
     return shares
 
