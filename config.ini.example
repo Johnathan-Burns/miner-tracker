@@ -1,5 +1,6 @@
-[Mining]
+[Ethereum]
 Address = "Your ETH Address"
+IPCLocation = "Path to the IPC node for an Ethereum Node (Geth, OpenEthereum, etc.)"
 
 [Database]
 Hostname = "Your SQL server hostname"

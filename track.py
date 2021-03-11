@@ -38,7 +38,7 @@ def get_global_config():
 
     config = configparser.ConfigParser()
     config.read(config_file)
-    address = config['Mining']['Address']
+    address = config['Ethereum']['Address']
 
     username = config['TrackUser']['Username']
     password = config['TrackUser']['Password']
