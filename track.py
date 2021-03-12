@@ -22,7 +22,7 @@ import configparser
 import os.path
 
 # Configuration variables
-config_file = 'config.ini'
+config_file = '/home/john/workspace/miner-tracker/config.ini'
 
 # Read configuration file and set variables
 def get_global_config():
@@ -69,11 +69,15 @@ def get_worker_stats(conn, name, conf):
         if (time % 3600 == 0):
             cur.execute(f"SELECT Timestamp FROM history WHERE WorkerID={name[1]} AND Timestamp={time};",)
 
-            if (cur.rowcount == 0):
+            response = False
+            for y in cur:
+                print(y)
+                response = True
+
+            if (not response):
                 s = x['validShares']
                 shares = shares + s
                 cur.execute(f"INSERT INTO history(WorkerID, Timestamp, Shares) VALUES({name[1]}, {time}, {s});",)
-                conn.commit()
 
     cur.close()
     return shares
@@ -82,7 +86,6 @@ def get_worker_stats(conn, name, conf):
 def update_totals(conn, worker_id, total):
     cur = conn.cursor()
     cur.execute(f"UPDATE workers SET TotalShares = TotalShares+{total} WHERE WorkerID = {worker_id}",)
-    conn.commit()
     cur.close()
 
 # Main function creates connection to database and executes functions as needed
@@ -94,7 +97,8 @@ if __name__ == '__main__':
                 password = conf['password'],
                 host = conf['host'],
                 port = conf['port'],
-                database = conf['db']
+                database = conf['db'],
+                autocommit = True
         )
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB instance: {e}")
