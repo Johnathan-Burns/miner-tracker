@@ -1,9 +1,13 @@
 import mariadb
+import web3
+import os
+import configparser
 from flask import Flask
 
 # Configuration variables
 config_file = 'config.ini'
 address = ''
+ipc = ''
 username = ''
 password = ''
 hostname = ''
@@ -22,7 +26,8 @@ def get_global_config():
     config = configparser.ConfigParser()
     config.read(config_file)
     
-    address = config['Mining']['Address']
+    address = config['Ethereum']['Address']
+    ipc = config['Ethereum']['IPCLocation']
 
     username = config['ViewUser']['Username']
     password = config['ViewUser']['Password']
