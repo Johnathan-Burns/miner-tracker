@@ -92,7 +92,7 @@ if __name__ == '__main__':
         conn = mariadb.connect(
                 user = conf['user'],
                 password = conf['password'],
-                host = conf['hostname'],
+                host = conf['host'],
                 port = conf['port'],
                 database = conf['db']
         )
