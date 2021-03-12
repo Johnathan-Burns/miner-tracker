@@ -23,12 +23,6 @@ import os.path
 
 # Configuration variables
 config_file = 'config.ini'
-address = ''
-username = ''
-password = ''
-hostname = ''
-port = 0
-db = ''
 
 # Read configuration file and set variables
 def get_global_config():
@@ -38,13 +32,16 @@ def get_global_config():
 
     config = configparser.ConfigParser()
     config.read(config_file)
-    address = config['Ethereum']['Address']
 
-    username = config['TrackUser']['Username']
-    password = config['TrackUser']['Password']
-    hostname = config['Database']['Hostname']
-    port = int(config['Database']['Port'])
-    db = config['Database']['DB']
+    conf = {'address': config['Ethereum']['Address']}
+
+    conf['user'] = config['TrackUser']['Username']
+    conf['password'] = config['TrackUser']['Password']
+    conf['host'] = config['Database']['Hostname']
+    conf['port'] = int(config['Database']['Port'])
+    conf['db'] = config['Database']['DB']
+
+    return conf
 
 def get_worker_names(conn):
     cur = conn.cursor()
@@ -59,11 +56,11 @@ def get_worker_names(conn):
     return names
 
 # Gets 12 hour historical stats for all workers
-def get_worker_stats(conn, name):
+def get_worker_stats(conn, name, conf):
     cur = conn.cursor()
     shares = 0
 
-    req = requests.get(f"https://api.ethermine.org/miner/:{address}/worker/{name[0]}/history")
+    req = requests.get(f"https://api.ethermine.org/miner/:{conf['address']}/worker/{name[0]}/history")
     data = req.json()["data"]
 
     for x in data:
@@ -90,14 +87,14 @@ def update_totals(conn, worker_id, total):
 
 # Main function creates connection to database and executes functions as needed
 if __name__ == '__main__':
-    get_global_config()
+    conf = get_global_config()
     try:
         conn = mariadb.connect(
-                user=username,
-                password=password,
-                host=hostname,
-                port=port,
-                database=db
+                user = conf['user'],
+                password = conf['password'],
+                host = conf['hostname'],
+                port = conf['port'],
+                database = conf['db']
         )
     except mariadb.Error as e:
         print(f"Error connecting to MariaDB instance: {e}")
@@ -105,7 +102,7 @@ if __name__ == '__main__':
 
     worker_names = get_worker_names(conn)
     for worker in worker_names:
-        total = get_worker_stats(conn, worker)
+        total = get_worker_stats(conn, worker, conf)
         print(f"Total for worker {worker[0]} - {total}")
         update_totals(conn, worker[1], total)
 
