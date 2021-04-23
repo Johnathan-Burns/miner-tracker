@@ -6,13 +6,6 @@ from flask import Flask
 
 # Configuration variables
 config_file = 'config.ini'
-address = ''
-ipc = ''
-username = ''
-password = ''
-hostname = ''
-port = ''
-db = ''
 
 # Start flask app (TODO: Does this need __name__ == '__main__'?
 app = Flask(__name__)
@@ -26,27 +19,30 @@ def get_global_config():
     config = configparser.ConfigParser()
     config.read(config_file)
     
-    address = config['Ethereum']['Address']
-    ipc = config['Ethereum']['IPCLocation']
+    conf = {'address': config['Ethereum']['Address']}
+    conf['ipc'] = config['Ethereum']['IPCLocation']
 
-    username = config['ViewUser']['Username']
-    password = config['ViewUser']['Password']
-    hostname = config['Database']['Hostname']
-    port = int(config['Database']['Port'])
-    db = config['Database']['DB']
+    conf['user'] = config['ViewUser']['Username']
+    conf['password'] = config['ViewUser']['Password']
+    conf['host'] = config['Database']['Hostname']
+    conf['port'] = int(config['Database']['Port'])
+    conf['db'] = config['Database']['DB']
+    print('Successfully read global config')
+    return conf 
 
 # Main page of app
 @app.route('/')
 def get_worker_statistics():
-    get_global_config()
+    conf = get_global_config()
     try:
+        #print(f"Connecting with {conf['user']}/{conf['password']} to {conf['host']}:{conf['port']}")
         conn = mariadb.connect(
-                user=username,
-                password=password,
-                host=hostname,
-                port=port,
-                database=db
-        )
+                user = conf['user'],
+                password = conf['password'],
+                host = conf['host'],
+                port = conf['port'],
+                db = conf['db']
+                )
     except mariadb.Error as e:
         print(f"Error connecting to database instance: {e}")
         exit()
@@ -62,5 +58,5 @@ def get_worker_statistics():
     cur.close()
     conn.close()
 
-    return arr
+    return str(arr)
 

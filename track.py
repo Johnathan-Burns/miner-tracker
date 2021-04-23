@@ -60,7 +60,7 @@ def get_worker_stats(conn, name, conf):
     cur = conn.cursor()
     shares = 0
 
-    req = requests.get(f"https://api.ethermine.org/miner/:{conf['address']}/worker/{name[0]}/history")
+    req = requests.get(f"http://api.ethermine.org/miner/:{conf['address']}/worker/{name[0]}/history")
     data = req.json()["data"]
 
     for x in data:
